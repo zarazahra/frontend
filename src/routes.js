@@ -1,12 +1,20 @@
+import { element } from 'prop-types'
 import React from 'react'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
-const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
-const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
+const Colors = React.lazy(() => import('./views/theme/jadwalDokter/JadwalDokter'))
+const Berita = React.lazy(() => import('./views/theme/berita/Berita'))
+const Pengaduan = React.lazy(() => import('./views/theme/pengaduan/PengaduanA'))
+const GaleriFoto = React.lazy(() => import('./views/theme/galeriFoto/GaleriFoto'))
+const LayananFasilitas = React.lazy(() => import('./views/theme/layananFasilitas/LayananFasilitas'))
 
 // Base
-const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
-const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'))
+// const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
+const JadwalDokter = React.lazy(() => import('./views/jadwal/jadwalDokter'))
+const JadwalPoliPsikolog = React.lazy(() => import('./views/jadwal/jadwalPoliPsikolog'))
+const JadwalPoliFisioterapi = React.lazy(() => import('./views/jadwal/jadwalPoliFisioterapi'))
+const SenamHamil = React.lazy(() => import('./views/jadwal/senamHamil'))
+// const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'))
 const Cards = React.lazy(() => import('./views/base/cards/Cards'))
 const Carousels = React.lazy(() => import('./views/base/carousels/Carousels'))
 const Collapses = React.lazy(() => import('./views/base/collapses/Collapses'))
@@ -25,6 +33,19 @@ const Tooltips = React.lazy(() => import('./views/base/tooltips/Tooltips'))
 const Buttons = React.lazy(() => import('./views/buttons/buttons/Buttons'))
 const ButtonGroups = React.lazy(() => import('./views/buttons/button-groups/ButtonGroups'))
 const Dropdowns = React.lazy(() => import('./views/buttons/dropdowns/Dropdowns'))
+
+// Data
+const DataDokter = React.lazy(() => import('./views/data/dataDokter/DataDokter'))
+const DataSpesialis = React.lazy(() => import('./views/data/dataSpesialis/DataSpesialis'))
+const DataPenghargaan = React.lazy(() => import('./views/data/dataPenghargaan/DataPenghargaan'))
+const Dapartemen = React.lazy(() => import('./views/data/dapartement/Dapartement'))
+const Laboratorium = React.lazy(() => import('./views/data/labor/Laboratorium'))
+
+// Komponen
+const Carousel = React.lazy(() => import('./views/komponen/carousel/Carousel'))
+const Grid = React.lazy(() => import('./views/komponen/gridColumn/GridColumn'))
+const TtgKami = React.lazy(() => import('./views/komponen/ttgKami/TtgKami'))
+const FAQ = React.lazy(() => import('./views/komponen/faq/Faq'))
 
 //Forms
 const ChecksRadios = React.lazy(() => import('./views/forms/checks-radios/ChecksRadios'))
@@ -51,15 +72,33 @@ const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
+// Login
+const Login = React.lazy(()=> import('./views/pages/login/Login'))
+
 const routes = [
-  { path: '/', exact: true, name: 'Home' },
+  { path: '/home', exact: true, name: 'Home', element: Dashboard},
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
-  { path: '/theme/colors', name: 'Colors', element: Colors },
-  { path: '/theme/typography', name: 'Typography', element: Typography },
-  { path: '/base', name: 'Base', element: Cards, exact: true },
-  { path: '/base/accordion', name: 'Accordion', element: Accordion },
-  { path: '/base/breadcrumbs', name: 'Breadcrumbs', element: Breadcrumbs },
+  { path: '/theme/jadwalDokter', name: 'Jadwal Dokter', element: Colors },
+  { path: '/data/dataSpesialis', name: 'Data Spesialis', element: DataSpesialis },
+  { path: '/data/dataDokter', name: 'Data Dokter', element: DataDokter },
+  { path: '/data/dataPenghargaan', name: 'Data Penghargaan', element: DataPenghargaan },
+  { path: '/data/dapartement', name: 'Dapartemen', element: Dapartemen },
+  { path: '/data/labor', name: 'Laboratorium', element: Laboratorium },
+  { path: '/theme/berita', name: 'Berita', element: Berita },
+  { path: '/theme/galeriFoto', name: 'Galeri Foto', element: GaleriFoto },
+  { path: '/komponen/carousel', name: 'Carousel', element: Carousel },
+  { path: '/theme/pengaduan', name: 'Pengaduan', element: Pengaduan },
+  { path: '/komponen/gridColumn', name: 'Grid Info', element: Grid },
+  { path: '/komponen/ttgKami', name: 'Tentang Kami', element: TtgKami },
+  { path: '/komponen/faq', name: 'FAQ', element: FAQ },
+  { path: '/theme/layananFasilitas', name: 'Layanan Fasilitas', element: LayananFasilitas },
+  { path: '/jadwal', name: 'Jadwal', element: Cards, exact: true },
+  { path: '/jadwal/jadwalDokter', name: 'Jadwal dokter', element: JadwalDokter },
+  { path: '/jadwal/jadwalPoliPsikolog', name: 'Jadwal Poli Psikolog', element: JadwalPoliPsikolog },
+  { path: '/jadwal/jadwalPoliFisioterapi', name: 'Jadwal Poli Fisioterapi', element: JadwalPoliFisioterapi },
+  { path: '/jadwal/senamHamil', name: 'Senam Hamil', element: SenamHamil },
+  // { path: '/base/breadcrumbs', name: 'Breadcrumbs', element: Breadcrumbs },
   { path: '/base/cards', name: 'Cards', element: Cards },
   { path: '/base/carousels', name: 'Carousel', element: Carousels },
   { path: '/base/collapses', name: 'Collapse', element: Collapses },

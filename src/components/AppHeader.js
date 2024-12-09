@@ -1,8 +1,10 @@
-import React, { useEffect, useRef } from 'react'
-import { NavLink } from 'react-router-dom'
+import React, { useEffect, useRef, useState } from 'react'
+import axios from 'axios'
+import { NavLink, useNavigate, Navigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   CContainer,
+  CButton,
   CDropdown,
   CDropdownItem,
   CDropdownMenu,
@@ -15,15 +17,7 @@ import {
   useColorModes,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import {
-  cilBell,
-  cilContrast,
-  cilEnvelopeOpen,
-  cilList,
-  cilMenu,
-  cilMoon,
-  cilSun,
-} from '@coreui/icons'
+import { cilContrast, cilMenu, cilMoon, cilSun } from '@coreui/icons'
 
 import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from './header/index'
@@ -34,12 +28,46 @@ const AppHeader = () => {
 
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.sidebarShow)
+  const navigate = useNavigate() // Menambahkan navigate untuk redirect
+
+  // State untuk menyimpan nama admin
+  const [adminName, setAdminName] = useState('')
+  const [loading, setLoading] = useState(true) // Add a loading state
+
+  // Fungsi untuk logout
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('name')
+    window.location.replace('/login') // Menggunakan replace agar riwayat halaman diganti dengan halaman login
+  }
 
   useEffect(() => {
-    document.addEventListener('scroll', () => {
-      headerRef.current &&
-        headerRef.current.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0)
-    })
+    const storedName = localStorage.getItem('userName')
+    if (storedName) {
+      setAdminName(storedName)
+      setLoading(false)
+    } else {
+      const fetchAdminName = async () => {
+        const token = localStorage.getItem('token')
+        if (token) {
+          try {
+            const response = await axios.get('/currentUser', {
+              headers: { Authorization: `Bearer ${token}` },
+            })
+            const nameFromAPI = response.data.name
+            localStorage.setItem('name', nameFromAPI)
+            setAdminName(nameFromAPI)
+            setLoading(false)
+          } catch (error) {
+            console.error('Failed to retrieve admin name:', error)
+            setLoading(false)
+          }
+        } else {
+          setLoading(false) // Consider handling this case more gracefully
+        }
+      }
+      fetchAdminName()
+    }
   }, [])
 
   return (
@@ -53,32 +81,16 @@ const AppHeader = () => {
         </CHeaderToggler>
         <CHeaderNav className="d-none d-md-flex">
           <CNavItem>
-            <CNavLink to="/dashboard" as={NavLink}>
+            <CNavLink to="/home/dashboard" as={NavLink}>
               Dashboard
             </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">Users</CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">Settings</CNavLink>
           </CNavItem>
         </CHeaderNav>
         <CHeaderNav className="ms-auto">
           <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilBell} size="lg" />
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilList} size="lg" />
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilEnvelopeOpen} size="lg" />
-            </CNavLink>
+            <CButton color="light" onClick={handleLogout}>
+              Logout
+            </CButton>
           </CNavItem>
         </CHeaderNav>
         <CHeaderNav>
@@ -128,6 +140,11 @@ const AppHeader = () => {
           <li className="nav-item py-1">
             <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
           </li>
+          <div className="d-flex align-items-center">
+            <span style={{ fontWeight: 'bold', fontSize: '16px', paddingLeft: '5px' }}>
+              {loading ? 'Loading...' : adminName || 'name'}
+            </span>
+          </div>
           <AppHeaderDropdown />
         </CHeaderNav>
       </CContainer>
@@ -139,3 +156,36 @@ const AppHeader = () => {
 }
 
 export default AppHeader
+
+// ProtectedRoute Component
+export const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem('token')
+  if (!token) {
+    return <Navigate to="/login" replace /> // Redirect ke halaman login jika tidak ada token
+  }
+  return children
+}
+
+// Contoh penggunaan ProtectedRoute di dalam App.js
+
+// import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+// import AppHeader from './AppHeader'
+// import Dashboard from './Dashboard'
+// import Login from './Login'
+
+// const App = () => {
+//   return (
+//     <Router>
+//       <Routes>
+//         <Route path="/login" element={<Login />} />
+//         <Route path="/home/dashboard" element={
+//           <ProtectedRoute>
+//             <Dashboard />
+//           </ProtectedRoute>
+//         } />
+//       </Routes>
+//     </Router>
+//   )
+// }
+
+// export default App
